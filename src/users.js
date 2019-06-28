@@ -1,30 +1,74 @@
 import React from "react";
-import { Route, Link} from "react-router-dom";
+import axios from 'axios';
+import {Icon, Table} from "antd";
+import {Link} from "react-router-dom";
 
-const User = ({ match }) => <p>{match.params.id}</p>;
+const TableBody = props => {
+    const columns = [
+      {
+          title: 'ID',
+          dataIndex: 'id',
+          key: 'id',
+      },
+      {
+          title: 'Name',
+          dataIndex: 'name',
+          key: 'name',
+      },
+      {
+          title: 'Date',
+          dataIndex: 'dob',
+          key: 'dob',
+      },
+      {
+          title: 'Gender',
+          dataIndex: 'gender',
+          key: 'gender',
+      },
+      {
+          title: 'Actions',
+          dataIndex: 'Actions',
+          key: 'Actions',
+      },
+  ];
+  
+  return <Table dataSource={props.data} columns={columns} />;
+  }
 
 class Users extends React.Component {
+    state = {
+        data: []
+    }
+    componentDidMount() {
+        axios.get(`http://localhost:6543/api/users`)
+          .then(res => {
+            const persons = res.data.data;
+            const data = [];
+            persons.map((row, index) => {
+                data.push(
+                    {
+                        Actions: <div>
+                            <Link to={`/user/${row.id}/growth?id=${row.id}`} ><Icon type="eye" style={{ color: 'green' }}/></Link>
+                        </div>,
+                        key: "'"+row.id+"'",
+                        id: row.id, 
+                        name: row.name,
+                        dob: row.dob,
+                        gender: row.gender,
+                    }
+                )
+                this.setState({ data: data });
+            });
+        });
+    }
     render() {
-    return (
-        <div>
-            <h1>Users</h1>
-          <strong>select a user</strong>
-          <ul>
-            <li>
-              <Link to="/users/1">User 1 </Link>
-            </li>
-            <li>
-              <Link to="/users/2">User 2 </Link>
-            </li>
-            <li>
-              <Link to="/users/3">User 3 </Link>
-            </li>
-          </ul>
-          <Route path="/users/:id" component={User} />
-        </div>
-
-    );
-  }
+        return (
+            <div>
+                <h1>Users</h1>
+                <TableBody data={this.state.data}/>
+            </div>
+        );
+    }
 }
 
 export default Users;

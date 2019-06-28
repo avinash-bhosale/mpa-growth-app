@@ -9,8 +9,9 @@ import {
 } from "react-router-dom";
 import App from "./App";
 import Users from "./users";
-import Contact from "./contact";
 import Notfound from "./notfound";
+import WrappedRegistrationForm from "./components/UserRegistration";
+import WrappedGrowthForm from "./components/UserGrowthForm";
 
 const routing = (
   <Router>
@@ -31,12 +32,18 @@ const routing = (
             Contact
           </NavLink>
         </li>
+        <li>
+          <NavLink activeClassName="active" to="/user/signup">
+            Register User
+          </NavLink>
+        </li>
       </ul>
       <hr />
       <Switch>
         <Route exact path="/" component={App} />
         <Route path="/users" component={Users} />
-        <Route path="/contact" component={Contact} />
+        <Route path="/user/signup" component={WrappedRegistrationForm} />
+        <Route path="/user/:id/growth" component={WrappedGrowthForm} />
         <Route component={Notfound} />
       </Switch>
     </div>
